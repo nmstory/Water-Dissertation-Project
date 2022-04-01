@@ -138,9 +138,11 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="WaterTile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="WaterTile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

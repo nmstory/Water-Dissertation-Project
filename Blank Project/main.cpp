@@ -1,4 +1,3 @@
-#include "../nclgl/window.h"
 #include "Renderer.h"
 
 // https://cpetry.github.io/TextureGenerator-Online/
@@ -9,7 +8,7 @@
 //http://fire-face.com/personal/water/
 
 int main() {
-	Window w("CSC8502 Tropical Island", 1280, 720, false);
+	Window w("Water Dissertation Project", 1280, 720, false);
 	double previousTime = w.GetTimer()->GetTotalTimeSeconds(); // init FPS variables
 	int frameCount = 0;
 
@@ -27,6 +26,7 @@ int main() {
 
 
 	while (w.UpdateWindow() && !Window::GetKeyboard()->KeyDown(KEYBOARD_ESCAPE)) {
+		float timestep = w.GetTimer()->GetTimeDeltaSeconds();
 
 		// Displaying FPS
 		double currentTime = w.GetTimer()->GetTotalTimeSeconds();
@@ -34,14 +34,13 @@ int main() {
 
 		if (currentTime - previousTime >= 1.0) // If a second has passed
 		{
-			std::cout << "FPS: " << frameCount << std::endl;
+			w.SetTitle("FPS: " + std::to_string(frameCount) + " | Frame time: " + std::to_string(timestep));
 
 			frameCount = 0;
 			previousTime = currentTime;
 		}
 
 
-		float timestep = w.GetTimer()->GetTimeDeltaSeconds();
 		renderer.UpdateScene(timestep);
 		renderer.RenderScene();
 		renderer.SwapBuffers();
