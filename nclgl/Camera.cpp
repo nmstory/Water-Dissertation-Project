@@ -21,40 +21,26 @@ void Camera::UpdateCamera(float dt) {
 	Vector3 forward = rotation * Vector3(0, 0, -1); // defining direction
 	Vector3 right = rotation * Vector3(1, 0, 0);
 
-	float speed = 30.0f * dt;
-	
-	if (isFollowingTrack) {
-		position += (direction * dt);
+	float speed = 70.0f * dt;
 
-		Vector3 po = position - track.front();
-		if (po.Length() < 0.1f) {
-			NextWaypoint();
-		}
+	// modifying position variable to move camera
+	if (Window::GetKeyboard()->KeyDown(KEYBOARD_W)) {
+		position += forward * speed;
 	}
-	else {
-		// modifying position variable to move camera
-		if (Window::GetKeyboard()->KeyDown(KEYBOARD_W)) {
-			position += forward * speed;
-		}
-		if (Window::GetKeyboard()->KeyDown(KEYBOARD_S)) {
-			position -= forward * speed;
-		}
-		if (Window::GetKeyboard()->KeyDown(KEYBOARD_A)) {
-			position -= right * speed;
-		}
-		if (Window::GetKeyboard()->KeyDown(KEYBOARD_D)) {
-			position += right * speed;
-		}
-		if (Window::GetKeyboard()->KeyDown(KEYBOARD_SHIFT)) {
-			position.y += speed;
-		}
-		if (Window::GetKeyboard()->KeyDown(KEYBOARD_SPACE)) {
-			position.y -= speed;
-		}
+	if (Window::GetKeyboard()->KeyDown(KEYBOARD_S)) {
+		position -= forward * speed;
 	}
-
-	if (Window::GetKeyboard()->KeyDown(KEYBOARD_F)) {
-		isFollowingTrack = !isFollowingTrack;
+	if (Window::GetKeyboard()->KeyDown(KEYBOARD_A)) {
+		position -= right * speed;
+	}
+	if (Window::GetKeyboard()->KeyDown(KEYBOARD_D)) {
+		position += right * speed;
+	}
+	if (Window::GetKeyboard()->KeyDown(KEYBOARD_SHIFT)) {
+		position.y += speed;
+	}
+	if (Window::GetKeyboard()->KeyDown(KEYBOARD_SPACE)) {
+		position.y -= speed;
 	}
 }
 
@@ -70,13 +56,4 @@ Matrix4 Camera::BuildViewMatrix() {
 	return Matrix4::Rotation(-pitch, Vector3(1, 0, 0)) *
 		Matrix4::Rotation(-yaw, Vector3(0, 1, 0)) *
 		Matrix4::Translation(-position);
-}
-
-void Camera::NextWaypoint() {
-	track.push(track.front());
-	track.pop();
-
-	direction = (track.front() - position);
-	direction.Normalise();
-	direction = direction * cameraTrackSpeed;
 }

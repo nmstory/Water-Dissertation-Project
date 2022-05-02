@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8274D442-89CD-4AC2-AA8E-A9FA621452ED}</ProjectGuid>
     <RootNamespace>Tutorial1</RootNamespace>
-    <ProjectName>CSC8502 Tropical Island</ProjectName>
+    <ProjectName>Water Rendering</ProjectName>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -136,13 +136,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="WaterTile.cpp" />
+    <ClInclude Include="Renderer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Renderer.h" />
-    <ClInclude Include="WaterTile.h" />
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

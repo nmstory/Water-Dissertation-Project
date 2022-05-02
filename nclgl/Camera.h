@@ -2,28 +2,18 @@
 
 #include "Matrix4.h"
 #include "Vector3.h"
-#include <queue>
 
 class Camera {
 public:
 	Camera(void) {
 		yaw = 0.0f;
 		pitch = 0.0f;
-		isFollowingTrack = false;
 	}
 
-	Camera(float pitch, float yaw, Vector3 position, std::queue<Vector3> track) {
+	Camera(float pitch, float yaw, Vector3 position) {
 		this->pitch = pitch;
 		this->yaw = yaw;
 		this->position = position;
-		this->track = track;
-		if (track.size() == 0) {
-			isFollowingTrack = false;
-		}
-		else {
-			isFollowingTrack = true;
-			NextWaypoint();
-		}
 	}
 
 	~Camera(void) {};
@@ -41,15 +31,7 @@ public:
 	void      SetPitch(float p) { pitch = p; }
 
 protected:
-	void NextWaypoint();
-
 	float yaw;
 	float pitch;
 	Vector3 position;
-
-	Vector3 direction;
-	bool isFollowingTrack;
-	float cameraTrackSpeed = 50.0f;
-	std::queue<Vector3> track; // Camera track of waypoints
-	
 };

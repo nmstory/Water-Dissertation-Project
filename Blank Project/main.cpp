@@ -1,54 +1,29 @@
+#include "../nclgl/window.h"
 #include "Renderer.h"
 
-// https://cpetry.github.io/TextureGenerator-Online/
-//https://www.cleanpng.com/png-skybox-texture-mapping-cube-mapping-sky-cloud-920475/
-// https://3dtextures.me/2017/12/28/water-001/
-
-//https://catlikecoding.com/unity/tutorials/flow/waves/
-//http://fire-face.com/personal/water/
-
 int main() {
-	Window w("Water Dissertation Project", 1280, 720, false);
-	double previousTime = w.GetTimer()->GetTotalTimeSeconds(); // init FPS variables
-	int frameCount = 0;
-
-	if (!w.HasInitialised()) {
+	Window w("Water Rendering", 1280, 720,false);
+	if(!w.HasInitialised()) {
 		return -1;
 	}
-
+	
 	Renderer renderer(w);
-	if (!renderer.HasInitialised()) {
+	if(!renderer.HasInitialised()) {
 		return -1;
 	}
 
 	w.LockMouseToWindow(true);
-	//w.ShowOSPointer(false);
+	w.ShowOSPointer(false);
 
-
-	while (w.UpdateWindow() && !Window::GetKeyboard()->KeyDown(KEYBOARD_ESCAPE)) {
-		float timestep = w.GetTimer()->GetTimeDeltaSeconds();
-
-		// Displaying FPS
-		double currentTime = w.GetTimer()->GetTotalTimeSeconds();
-		frameCount++;
-
-		if (currentTime - previousTime >= 1.0) // If a second has passed
-		{
-			w.SetTitle("FPS: " + std::to_string(frameCount) + " | Frame time: " + std::to_string(timestep));
-
-			frameCount = 0;
-			previousTime = currentTime;
-		}
-
-
-		renderer.UpdateScene(timestep);
+	while(w.UpdateWindow() && !Window::GetKeyboard()->KeyDown(KEYBOARD_ESCAPE)){
+		renderer.UpdateScene(w.GetTimer()->GetTimeDeltaSeconds());
 		renderer.RenderScene();
 		renderer.SwapBuffers();
+
 		if (Window::GetKeyboard()->KeyDown(KEYBOARD_F5)) {
 			Shader::ReloadAllShaders();
 		}
-		
-		
 	}
+
 	return 0;
 }

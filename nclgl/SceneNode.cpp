@@ -1,11 +1,8 @@
 #include "SceneNode.h"
-#include "../Blank Project/Renderer.h"
 
-SceneNode::SceneNode(Mesh* mesh, Shader* shader, Vector4 colour, float boundingSize) {
+SceneNode::SceneNode(Mesh* mesh, Vector4 colour) {
 	this->mesh = mesh;
 	this->colour = colour;
-	this->shader = shader;
-	this->boundingRadius = boundingSize;
 	parent = NULL;
 	modelScale = Vector3(1, 1, 1);
 
@@ -25,19 +22,7 @@ void SceneNode::AddChild(SceneNode* s){
 	s->parent = this;
 }
 
-void SceneNode::Draw(Renderer& r) {
-
-	// BindShader done in Renderer
-
-	for (int i = 0; i < textures.size(); ++i) {
-		glUniform1i(glGetUniformLocation(shader->GetProgram(), textures[i].name), i); // nt.tex or 0 / i?
-		glActiveTexture(GL_TEXTURE0 + i);
-		glBindTexture(GL_TEXTURE_2D, textures[i].tex);
-	}
-
-	//if(requireCamera) glUniform3fv(glGetUniformLocation(shader->GetProgram(), "cameraPos"), 1, (float*)&camera->GetPosition());
-	if(requireCamera) glUniform3fv(glGetUniformLocation(shader->GetProgram(), "cameraPos"), 1, (float*)r.GetCamera());
-
+void SceneNode::Draw(const OGLRenderer& r) {
 	if (mesh) mesh->Draw();
 }
 
