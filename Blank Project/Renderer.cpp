@@ -34,7 +34,8 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent) {
 	reflectShader = new Shader("reflectVertex.glsl", "reflectFragment.glsl");
 	skyboxShader = new Shader("skyboxVertex.glsl", "skyboxFragment.glsl");
 	lightShader = new Shader("PerPixelVertex.glsl", "PerPixelFragment.glsl");
-	waterShader = new Shader("WaterVertexv2.glsl", "WaterFragmentv2.glsl");
+	//waterShader = new Shader("WaterVertexv2.glsl", "WaterFragmentv2.glsl");
+	waterShader = new Shader("WaterVertexv2.glsl", "WaterFragmentv2.glsl", "GeometryShader.glsl", "TCS.glsl", "TES.glsl");
 	sceneShader = new Shader("vertexShader.glsl", "fragShader.glsl");
 
 	if (!reflectShader->LoadSuccess() || !skyboxShader->LoadSuccess() || !lightShader->LoadSuccess() || !waterShader->LoadSuccess() || !sceneShader->LoadSuccess()) return;
@@ -101,6 +102,19 @@ void Renderer::UpdateScene(float dt) {
 }
 
 void Renderer::RenderScene() {
+
+
+
+
+	// https://www.ultraengine.com/community/blogs/entry/1185-pass-the-tessellation-please-part-1/
+
+
+
+
+
+
+
+
 	/*
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	DrawSkybox();
@@ -168,6 +182,7 @@ void Renderer::RenderScene() {
 	glUniform3fv(glGetUniformLocation(waterShader->GetProgram(), "lightColour"), 1, (float*)&light->GetColour());
 	glUniform3fv(glGetUniformLocation(waterShader->GetProgram(), "lightPos"), 1, (float*)&light->GetPosition());
 	
+	glPatchParameteri(GL_PATCH_VERTICES, 4);
 	waterQuad->Draw();
 }
 

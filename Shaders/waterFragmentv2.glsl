@@ -1,9 +1,6 @@
 #version 400 core
 
-in vec4 clipSpacePos;
-in vec2 texCoords;
-in vec3 vectorPointingToCamera;
-in vec3 vectorLightToWater;
+
 
 out vec4 out_Color;
 
@@ -21,6 +18,23 @@ const float shineDamper = 10.0f;
 const float shineStrengthINV = 5f;
 const float reflectivity = 0.6f;
 
+//in vec4 clipSpacePos;
+//in vec2 texCoords;
+//in vec3 vectorPointingToCamera;
+//in vec3 vectorLightToWater;
+
+in gs_fs {
+	vec3 normal;
+	vec3 tangent;
+	vec3 binormal;
+	vec3 worldPosition;
+	
+	vec4 clipSpacePos;
+	vec2 texCoords;
+	vec3 vectorPointingToCamera;
+	vec3 vectorLightToWater;
+} IN;
+
 
 // * clamp(waterDepth / 10, 0.0f, 1.0f); // water depth fixes edging issue
 // ^ taper specular highlights off as it tends to edges???
@@ -29,7 +43,7 @@ void main(void) {
 
 	// Clip space to NDC
 	// (/ 2.0 + 0.5) -> to translate from NDC coordinate system (-1, 1) in x, y to (0, 1) in x, y.
-	vec2 ndc = (clipSpacePos.xy / clipSpacePos.w)/2.0f + 0.5f;
+	vec2 ndc = (IN.clipSpacePos.xy / IN.clipSpacePos.w)/2.0f + 0.5f;
 	vec2 refractTexCoords = vec2(ndc.x, ndc.y);
 	vec2 reflectTexCoords = vec2(ndc.x, 1.0-ndc.y);
 	
@@ -44,8 +58,8 @@ void main(void) {
 	float waterDepth = floorDistance - waterDistance;
 	
 	// Samples DUDV map once, then uses that value as distorted texture coordinates to sample DUDV map a second time, and can also be used to sample normal map!
-	vec2 distoredTexCoords = texture(dudvMap, vec2(texCoords.x + waveMovementFactor, texCoords.y)).rg * 0.1;
-	distoredTexCoords = texCoords + vec2(distoredTexCoords.x, distoredTexCoords.y + waveMovementFactor);
+	vec2 distoredTexCoords = texture(dudvMap, vec2(IN.texCoords.x + waveMovementFactor, IN.texCoords.y)).rg * 0.1;
+	distoredTexCoords = IN.texCoords + vec2(distoredTexCoords.x, distoredTexCoords.y + waveMovementFactor);
 	vec2 totalDistorion = (texture(dudvMap, distoredTexCoords).rg * 2.0 - 1.0) * waveStrength;
 	
 	refractTexCoords += totalDistorion;
@@ -64,14 +78,14 @@ void main(void) {
 	normal = normalize(normal);
 
 	//fresnel
-	vec3 viewVector = normalize(vectorPointingToCamera);
+	vec3 viewVector = normalize(IN.vectorPointingToCamera);
 	float refractiveFactor = dot(viewVector, normal);
 	refractiveFactor = pow(refractiveFactor, 5.0); // add new 'fresnel strengh' value???
 	
 	
 
 	// calculating specular highlight by comparing viewVector (vector from frag to camera) to normal value. This is then scaled with shineDamper
-	vec3 reflectedLight = reflect(normalize(vectorLightToWater), normal);
+	vec3 reflectedLight = reflect(normalize(IN.vectorLightToWater), normal);
 	float specular = max(dot(reflectedLight, viewVector), 0.0);
 	specular = pow(specular, shineDamper);
 	vec3 specularHighlights = lightColour * specular * reflectivity;
